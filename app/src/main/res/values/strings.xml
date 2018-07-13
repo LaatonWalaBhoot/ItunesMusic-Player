@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Itunes Music Player</string>
+    <string name="search_hint">Search Movie, Title, Artists, Movie etc.</string>
+    <string name="introduction_text">Listen to your favourite \nsongs from youtube</string>
+</resources>
