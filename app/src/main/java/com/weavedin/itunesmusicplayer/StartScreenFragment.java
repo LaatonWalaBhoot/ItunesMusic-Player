@@ -17,15 +17,16 @@ import butterknife.ButterKnife;
 
 public class StartScreenFragment extends Fragment {
 
+    @BindView(R.id.search_container)
+    CardView mSearchContainer;
+
     private MainNavigator mMainNavigator;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start,container,false);
-        if(getActivity()!=null) {
-            ButterKnife.bind(this,view);
-        }
+        ButterKnife.bind(this,view);
         return view;
     }
 
@@ -38,7 +39,12 @@ public class StartScreenFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mSearchContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMainNavigator.initSearchScreen();
+            }
+        });
     }
 
     @Override

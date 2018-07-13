@@ -25,7 +25,6 @@
         app:cardCornerRadius="5dp">
 
         <LinearLayout
-            android:descendantFocusability="blocksDescendants"
             android:id="@+id/search_descendant"
             android:background="@android:color/white"
             android:orientation="horizontal"
@@ -41,10 +40,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
 
-            <AutoCompleteTextView
+            <TextView
                 android:hint="@string/search_hint"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
+                android:gravity="start|center_vertical"
                 android:textSize="12sp"
                 android:background="@null"
                 android:layout_weight="0.9"
