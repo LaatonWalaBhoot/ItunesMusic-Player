@@ -2,6 +2,7 @@ package com.weavedin.itunesmusicplayer.di.modules;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.weavedin.itunesmusicplayer.di.modules.scope.PerActivityScope;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +42,7 @@ public class RetrofitModule {
             .addInterceptor(loggingInterceptor).build();
 
     @Provides
+    @PerActivityScope
     public Retrofit retrofit() {
 
 

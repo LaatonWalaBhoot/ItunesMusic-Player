@@ -33,6 +33,7 @@
                     android:layout_height="?attr/actionBarSize">
 
                     <ImageView
+                        android:id="@+id/navigation_btn"
                         android:layout_margin="16dp"
                         android:layout_width="0dp"
                         android:src="@drawable/shape"
@@ -76,6 +77,7 @@
                         android:layout_height="40dp">
 
                         <ImageView
+                            android:id="@+id/search_btn"
                             android:layout_gravity="center"
                             android:layout_margin="8dp"
                             android:src="@drawable/search"
@@ -84,6 +86,7 @@
                             android:layout_height="wrap_content" />
 
                         <AutoCompleteTextView
+                            android:id="@+id/search_bar"
                             android:hint="hello"
                             android:singleLine="true"
                             android:imeOptions="actionSearch"

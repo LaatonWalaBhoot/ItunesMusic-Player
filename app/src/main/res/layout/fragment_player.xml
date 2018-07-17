@@ -1,5 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#fff3f3f3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:weightSum="1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <ImageView
+            android:id="@+id/artwork"
+            android:scaleType="centerCrop"
+            android:layout_weight="0.6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+        
+        <RelativeLayout
+            android:layout_weight="0.4"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                android:clickable="false"
+                android:focusable="false"
+                android:layout_alignParentTop="true"
+                android:id="@+id/seekbar"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                app:dsb_indicatorPopupEnabled="false"
+                app:dsb_trackColor="#dcdcdc"
+                app:dsb_trackHeight="5dp"
+                app:dsb_thumbSize="0dp"
+                app:dsb_progressColor="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/song_name"
+                android:singleLine="true"
+                android:layout_below="@+id/seekbar"
+                android:textSize="20sp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/artist_name"
+                android:singleLine="true"
+                android:layout_below="@id/song_name"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_marginTop="16dp"
+                android:layout_below="@+id/artist_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/play_btn_container"
+                    android:id="@+id/list_btn"
+                    android:layout_marginEnd="50dp"
+                    android:src="@drawable/combined_shape"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
+                <FrameLayout
+                    android:layout_centerInParent="true"
+                    android:id="@+id/play_btn_container"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp">
+
+                    <ProgressBar
+                        android:id="@+id/prepare_progress"
+                        android:layout_gravity="center"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:id="@+id/play_btn"
+                        android:scaleType="center"
+                        android:src="@drawable/triangle"
+                        app:backgroundTint="@android:color/white"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp" />
+
+                </FrameLayout>
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/play_btn_container"
+                    android:id="@+id/favourites_btn"
+                    android:layout_marginStart="50dp"
+                    android:src="@drawable/shape_heart"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+        
+    </LinearLayout>
 
 </RelativeLayout>

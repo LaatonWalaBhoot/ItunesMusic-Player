@@ -9,5 +9,5 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     @GET("/search")
-    Call<SearchResult> getTracks(@Query("term") String query, @Query("limit") int limit);
+    Call<SearchResult> getTracks(@Query("term") String query);
 }
