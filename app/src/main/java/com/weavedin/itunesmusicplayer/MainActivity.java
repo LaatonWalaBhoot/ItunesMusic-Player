@@ -30,6 +30,7 @@ import com.weavedin.itunesmusicplayer.ui.favourites.FavouritesScreenFragment;
 import com.weavedin.itunesmusicplayer.ui.player.PlayerScreenFragment;
 import com.weavedin.itunesmusicplayer.ui.search.SearchScreenFragment;
 import com.weavedin.itunesmusicplayer.ui.start.StartScreenFragment;
+import com.weavedin.itunesmusicplayer.utils.Constants;
 import com.weavedin.itunesmusicplayer.utils.ToolbarUtils;
 
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mRoomDatabase = Room.databaseBuilder(this, PlayerDb.class, "MPLayer_db").build();
+        mRoomDatabase = Room.databaseBuilder(this, PlayerDb.class, Constants.DB_NAME).build();
         mMainViewModel.setmRoomDatabase(mRoomDatabase);
         component = DaggerMainActivityComponent.builder().build();
         component.injectMainActivity(this);

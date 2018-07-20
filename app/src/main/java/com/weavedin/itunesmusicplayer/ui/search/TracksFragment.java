@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.weavedin.itunesmusicplayer.MainNavigator;
 import com.weavedin.itunesmusicplayer.MainViewModel;
 import com.weavedin.itunesmusicplayer.R;
 import com.weavedin.itunesmusicplayer.data.models.Result;
+import com.weavedin.itunesmusicplayer.utils.Constants;
 
 import java.util.List;
 
@@ -43,6 +45,10 @@ public class TracksFragment extends Fragment implements TracksAdapter.OnItemClic
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tracks, container, false);
         ButterKnife.bind(this, view);
+        mTracksList.setLayoutManager(new LinearLayoutManager(getContext()));
+        ViewCompat.setNestedScrollingEnabled(mTracksList, false);
+        mTracksAdapter = new TracksAdapter();
+        mTracksAdapter.setOnItemClickListener(this);
         return view;
     }
 
@@ -52,7 +58,7 @@ public class TracksFragment extends Fragment implements TracksAdapter.OnItemClic
         if (getParentFragment() == null) {
             return;
         }
-        mMainNavigator = (MainNavigator) getParentFragment().getActivity();
+        mMainNavigator = (MainNavigator) getParentFragment().getContext();
     }
 
     @Override
@@ -62,15 +68,11 @@ public class TracksFragment extends Fragment implements TracksAdapter.OnItemClic
             return;
         }
         if (getArguments() != null) {
-            position = getArguments().getInt("Position");
-            children = getArguments().getInt("Children");
+            position = getArguments().getInt(Constants.POSITION);
+            children = getArguments().getInt(Constants.CHILDREN);
         }
         mMainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         mResults = mMainViewModel.getResults(position*children, (position+1)*children);
-        mTracksList.setLayoutManager(new LinearLayoutManager(getContext()));
-//        ViewCompat.setNestedScrollingEnabled(mTracksList, false);
-        mTracksAdapter = new TracksAdapter();
-        mTracksAdapter.setOnItemClickListener(this);
         mTracksAdapter.setList(mResults);
         mTracksList.setAdapter(mTracksAdapter);
     }
@@ -79,5 +81,6 @@ public class TracksFragment extends Fragment implements TracksAdapter.OnItemClic
     public void onItemClick(Result result) {
         mMainViewModel.setmCurrentResult(result);
         mMainNavigator.initPlayerScreen();
+        Log.d("LFC", "TRACKS");
     }
 }

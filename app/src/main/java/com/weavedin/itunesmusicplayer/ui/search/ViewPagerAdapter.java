@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.weavedin.itunesmusicplayer.MainViewModel;
 import com.weavedin.itunesmusicplayer.ui.search.TracksFragment;
+import com.weavedin.itunesmusicplayer.utils.Constants;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -32,8 +33,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Bundle bundle = new Bundle();
-        bundle.putInt("Position", position);
-        bundle.putInt("Children", children);
+        bundle.putInt(Constants.POSITION, position);
+        bundle.putInt(Constants.CHILDREN, children);
         tracksFragment = new TracksFragment();
         tracksFragment.setArguments(bundle);
         return tracksFragment;

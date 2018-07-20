@@ -117,7 +117,6 @@ public class PlayerScreenFragment extends Fragment implements MediaPlayer.OnComp
     @Override
     public void onCompletion(MediaPlayer mp) {
         mPlayButton.setImageResource(R.drawable.triangle);
-        mSeekbar.setProgress(0);
     }
 
     private void initPlayer(final Result result) {
@@ -144,6 +143,7 @@ public class PlayerScreenFragment extends Fragment implements MediaPlayer.OnComp
                 mPlayButton.setImageResource(R.drawable.combined_shape_2);
                 hideProgress();
                 getInstance().start();
+                getInstance().setOnCompletionListener(PlayerScreenFragment.this);
                 updateProgress();
             }
         });

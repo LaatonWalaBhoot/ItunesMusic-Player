@@ -45,6 +45,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.9"
                 android:background="@null"
+                android:textColorHint="@android:color/darker_gray"
                 android:gravity="start|center_vertical"
                 android:hint="@string/search_hint"
                 android:textSize="12sp" />

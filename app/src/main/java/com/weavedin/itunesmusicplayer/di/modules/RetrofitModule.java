@@ -3,6 +3,7 @@ package com.weavedin.itunesmusicplayer.di.modules;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.weavedin.itunesmusicplayer.di.scopes.PerActivityScope;
+import com.weavedin.itunesmusicplayer.utils.Constants;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +21,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class RetrofitModule {
 
-    public static final String BASE_API_URL = "http://itunes.apple.com/";
     public final static int CONNECTION_TIMEOUT = 30;
     private final static int READ_TIMEOUT = 30;
     private final static int WRITE_TIMEOUT = 30;
@@ -55,7 +55,7 @@ public class RetrofitModule {
         return new Retrofit.Builder()
                 .client(okHttpClient)
                 .client(httpClientBuilder.build())
-                .baseUrl(BASE_API_URL)
+                .baseUrl(Constants.BASE_API_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
