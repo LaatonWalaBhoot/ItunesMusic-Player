@@ -1,24 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#fff3f3f3"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#fff3f3f3">
+
+    <ProgressBar
+        android:id="@+id/load_progress"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="Nothing to Show"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="36sp" />
 
     <TextView
         android:id="@+id/header"
-        android:layout_marginStart="16dp"
-        android:textColor="@android:color/darker_gray"
-        android:gravity="start|center_vertical"
-        android:textSize="16sp"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:gravity="start|center_vertical"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/tracks_container"
-        android:layout_below="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tab_layout"
+        android:layout_below="@+id/header">
 
     </android.support.v4.view.ViewPager>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        app:tabPadding="5dp"
+        app:tabBackground="@drawable/tab_selector"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp" />
 
 </RelativeLayout>

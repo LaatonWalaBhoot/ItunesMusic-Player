@@ -1,117 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#fff3f3f3"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
+    android:layout_height="match_parent"
+    android:background="#fff3f3f3">
+
     <LinearLayout
-        android:weightSum="1"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
         <ImageView
             android:id="@+id/artwork"
-            android:scaleType="centerCrop"
-            android:layout_weight="0.6"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
-        
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:scaleType="centerCrop" />
+
         <RelativeLayout
-            android:layout_weight="0.4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_weight="0.4">
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                android:clickable="false"
-                android:focusable="false"
-                android:layout_alignParentTop="true"
                 android:id="@+id/seekbar"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
+                android:layout_alignParentTop="true"
+                android:clickable="false"
+                android:focusable="false"
                 app:dsb_indicatorPopupEnabled="false"
-                app:dsb_trackColor="#dcdcdc"
-                app:dsb_trackHeight="5dp"
+                app:dsb_progressColor="@color/colorPrimary"
                 app:dsb_thumbSize="0dp"
-                app:dsb_progressColor="@color/colorPrimary"/>
+                app:dsb_trackColor="#dcdcdc"
+                app:dsb_trackHeight="5dp" />
+
+            <TextView
+                android:id="@+id/start_time"
+                android:layout_marginStart="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/seekbar"
+                android:layout_below="@+id/seekbar"
+                android:text="00:00"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/end_time"
+                android:layout_marginEnd="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/seekbar"
+                android:layout_below="@+id/seekbar"
+                android:text="00:00"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/song_name"
-                android:singleLine="true"
-                android:layout_below="@+id/seekbar"
-                android:textSize="20sp"
-                android:layout_marginBottom="4dp"
-                android:textColor="@android:color/black"
-                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/end_time"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/artist_name"
-                android:singleLine="true"
-                android:layout_below="@id/song_name"
-                android:textSize="16sp"
-                android:textColor="@android:color/darker_gray"
-                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/song_name"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp" />
 
             <RelativeLayout
-                android:layout_marginTop="16dp"
-                android:layout_below="@+id/artist_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/artist_name"
+                android:layout_marginTop="16dp">
 
                 <ImageView
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/play_btn_container"
                     android:id="@+id/list_btn"
-                    android:layout_marginEnd="50dp"
-                    android:src="@drawable/combined_shape"
                     android:layout_width="20dp"
-                    android:layout_height="20dp" />
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="50dp"
+                    android:layout_toStartOf="@+id/play_btn_container"
+                    android:src="@drawable/combined_shape" />
 
                 <FrameLayout
-                    android:layout_centerInParent="true"
                     android:id="@+id/play_btn_container"
                     android:layout_width="80dp"
-                    android:layout_height="80dp">
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true">
 
                     <ProgressBar
                         android:id="@+id/prepare_progress"
-                        android:layout_gravity="center"
                         android:layout_width="60dp"
-                        android:layout_height="60dp" />
+                        android:layout_height="60dp"
+                        android:layout_gravity="center" />
 
                     <android.support.design.widget.FloatingActionButton
-                        android:visibility="gone"
-                        android:layout_gravity="center"
                         android:id="@+id/play_btn"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
                         android:scaleType="center"
                         android:src="@drawable/triangle"
-                        app:backgroundTint="@android:color/white"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp" />
+                        android:visibility="gone"
+                        app:backgroundTint="@android:color/white" />
 
                 </FrameLayout>
 
                 <ImageView
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/play_btn_container"
                     android:id="@+id/favourites_btn"
-                    android:layout_marginStart="50dp"
-                    android:src="@drawable/shape_heart"
                     android:layout_width="20dp"
-                    android:layout_height="20dp" />
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="50dp"
+                    android:layout_toEndOf="@+id/play_btn_container"
+                    android:src="@drawable/shape_heart" />
 
             </RelativeLayout>
 
         </RelativeLayout>
-        
+
     </LinearLayout>
 
 </RelativeLayout>

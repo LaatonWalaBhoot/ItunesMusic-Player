@@ -7,4 +7,6 @@ public interface MainNavigator {
     void initFavouritesScreen();
 
     void initPlayerScreen();
+
+    void initListNavigation();
 }

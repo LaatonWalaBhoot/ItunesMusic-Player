@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,10 +15,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
+            app:contentInsetEnd="0dp"
             app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
             app:contentInsetRight="0dp"
-            app:contentInsetEnd="0dp">
+            app:contentInsetStart="0dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -27,76 +26,76 @@
 
                 <LinearLayout
                     android:id="@+id/name_container"
-                    android:weightSum="1"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize">
+                    android:layout_height="?attr/actionBarSize"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
 
                     <ImageView
                         android:id="@+id/navigation_btn"
-                        android:layout_margin="16dp"
                         android:layout_width="0dp"
-                        android:src="@drawable/shape"
+                        android:layout_height="match_parent"
+                        android:layout_margin="16dp"
                         android:layout_weight="0.1"
-                        android:layout_height="match_parent" />
+                        android:src="@drawable/shape" />
 
                     <TextView
-                        android:layout_weight="0.8"
-                        android:text="Mplayer"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:gravity="start|center_vertical"
-                        android:textColor="@android:color/white"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.8"
+                        android:gravity="start|center_vertical"
+                        android:text="Mplayer"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/favourites_btn"
-                        android:layout_margin="16dp"
                         android:layout_width="0dp"
-                        android:src="@drawable/favorite"
+                        android:layout_height="match_parent"
+                        android:layout_margin="16dp"
                         android:layout_weight="0.1"
-                        android:layout_height="match_parent" />
+                        android:src="@drawable/favorite" />
 
                 </LinearLayout>
 
                 <android.support.v7.widget.CardView
-                    android:descendantFocusability="beforeDescendants"
-                    android:layout_below="@+id/name_container"
                     android:id="@+id/search_container"
-                    android:layout_margin="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/name_container"
+                    android:layout_margin="8dp"
+                    android:descendantFocusability="beforeDescendants"
                     app:cardCornerRadius="5dp">
 
                     <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
                         android:background="@android:color/white"
                         android:orientation="horizontal"
-                        android:weightSum="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp">
+                        android:weightSum="1">
 
                         <ImageView
                             android:id="@+id/search_btn"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="8dp"
-                            android:src="@drawable/search"
                             android:layout_weight="0.1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:src="@drawable/search" />
 
                         <AutoCompleteTextView
                             android:id="@+id/search_bar"
-                            android:hint="hello"
-                            android:singleLine="true"
-                            android:imeOptions="actionSearch"
-                            android:textColor="@android:color/black"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.9"
                             android:background="@null"
                             android:gravity="start|center_vertical"
-                            android:textSize="16sp"
-                            android:layout_weight="0.9"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent" />
+                            android:hint="hello"
+                            android:imeOptions="actionSearch"
+                            android:singleLine="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 
@@ -109,10 +108,10 @@
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
-        android:layout_below="@+id/toolbar_container"
         android:id="@+id/container"
-        android:background="@android:color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_container"
+        android:background="@android:color/white" />
 
 </RelativeLayout>

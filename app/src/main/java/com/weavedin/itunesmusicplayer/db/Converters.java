@@ -8,8 +8,8 @@ import com.weavedin.itunesmusicplayer.data.models.Result;
 public class Converters {
 
     @TypeConverter
-    public static Result fromString (String value) {
-        return new Gson().fromJson(value,Result.class);
+    public static Result fromString(String value) {
+        return new Gson().fromJson(value, Result.class);
     }
 
     @TypeConverter

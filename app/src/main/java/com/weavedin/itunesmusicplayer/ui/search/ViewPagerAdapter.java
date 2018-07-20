@@ -1,20 +1,26 @@
 package com.weavedin.itunesmusicplayer.ui.search;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
+import com.weavedin.itunesmusicplayer.MainViewModel;
 import com.weavedin.itunesmusicplayer.ui.search.TracksFragment;
 
-public class ViewPagerAdapter extends FragmentPagerAdapter{
+public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private int count;
+    private int children;
     private FragmentManager fragmentManager;
+    private TracksFragment tracksFragment;
 
-    public ViewPagerAdapter(FragmentManager fm, int count) {
+    public ViewPagerAdapter(FragmentManager fm, int count, int children) {
         super(fm);
-        this.count = count;
         this.fragmentManager = fm;
+        this.children = children;
+        this.count = count;
     }
 
     @Override
@@ -22,9 +28,13 @@ public class ViewPagerAdapter extends FragmentPagerAdapter{
         return count;
     }
 
-
     @Override
     public Fragment getItem(int position) {
-        return new TracksFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("Position", position);
+        bundle.putInt("Children", children);
+        tracksFragment = new TracksFragment();
+        tracksFragment.setArguments(bundle);
+        return tracksFragment;
     }
 }

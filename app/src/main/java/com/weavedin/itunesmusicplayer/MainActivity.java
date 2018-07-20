@@ -6,25 +6,26 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.weavedin.itunesmusicplayer.data.remote.ApiService;
-//import com.weavedin.itunesmusicplayer.di.modules.component.DaggerMainActivityComponent;
 import com.weavedin.itunesmusicplayer.db.PlayerDb;
 import com.weavedin.itunesmusicplayer.db.entity.Search;
-import com.weavedin.itunesmusicplayer.di.modules.component.DaggerMainActivityComponent;
-import com.weavedin.itunesmusicplayer.di.modules.component.MainActivityComponent;
+import com.weavedin.itunesmusicplayer.di.components.DaggerMainActivityComponent;
+import com.weavedin.itunesmusicplayer.di.components.MainActivityComponent;
 import com.weavedin.itunesmusicplayer.ui.favourites.FavouritesScreenFragment;
 import com.weavedin.itunesmusicplayer.ui.player.PlayerScreenFragment;
 import com.weavedin.itunesmusicplayer.ui.search.SearchScreenFragment;
 import com.weavedin.itunesmusicplayer.ui.start.StartScreenFragment;
+import com.weavedin.itunesmusicplayer.utils.ToolbarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +47,17 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
     @BindView(R.id.favourites_btn)
     ImageView mFavouritesButton;
 
+    @BindView(R.id.navigation_btn)
+    ImageView mNavigationButton;
+
     @Inject
     Retrofit retrofit;
+
+    private static final String START_SCREEN = StartScreenFragment.class.getSimpleName();
+    private static final String SEARCH_SCREEN = SearchScreenFragment.class.getSimpleName();
+    private static final String PLAYER_SCREEN = PlayerScreenFragment.class.getSimpleName();
+    private static final String FAVOURITES_SCREEN = FavouritesScreenFragment.class.getSimpleName();
+
 
     private MainActivityComponent component;
     private MainViewModel mMainViewModel;
@@ -62,19 +72,21 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mRoomDatabase = Room.databaseBuilder(this, PlayerDb.class,"MPLayer_db").build();
+        mRoomDatabase = Room.databaseBuilder(this, PlayerDb.class, "MPLayer_db").build();
         mMainViewModel.setmRoomDatabase(mRoomDatabase);
         component = DaggerMainActivityComponent.builder().build();
         component.injectMainActivity(this);
-        startFragment(new StartScreenFragment());
+        replaceFragment(new StartScreenFragment());
         liveData = mMainViewModel.getAllSearches();
-        arrayAdapter = new ArrayAdapter<String>(this,R.layout.drop_down,searches);
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.drop_down, searches);
         mSearchBar.setAdapter(arrayAdapter);
         liveData.observe(this, new Observer<List<Search>>() {
             @Override
             public void onChanged(@Nullable List<Search> searches) {
-                for(Search search: searches) {
-                    MainActivity.this.searches.add(search.query);
+                if (searches != null) {
+                    for (Search search : searches) {
+                        MainActivity.this.searches.add(search.query);
+                    }
                 }
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -82,50 +94,98 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         mFavouritesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startFragment(new FavouritesScreenFragment());
+                initFavouritesScreen();
             }
         });
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!TextUtils.isEmpty(mSearchBar.getText().toString())) {
+                if (!TextUtils.isEmpty(mSearchBar.getText().toString())) {
                     mMainViewModel.initCall(retrofit.create(ApiService.class)
-                            ,mSearchBar.getText().toString());
+                            , mSearchBar.getText().toString());
                     mMainViewModel.insertSearch(mSearchBar.getText().toString());
-                    Toast.makeText(MainActivity.this, ""+searches.size(), Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        mNavigationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ToolbarUtils.hasBackButtonVisible()) {
+                    onBackPressed();
+                }
+            }
+        });
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                setToolbar();
             }
         });
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        setToolbar();
+    }
+
+    @Override
     public void initSearchScreen() {
-        startFragment(new SearchScreenFragment());
+        addFragment(new SearchScreenFragment());
     }
 
     @Override
     public void initFavouritesScreen() {
-        startFragment(new FavouritesScreenFragment());
+        addFragment(new FavouritesScreenFragment());
     }
 
     @Override
     public void initPlayerScreen() {
-        startFragment(new PlayerScreenFragment());
-    }
-
-    private void startFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment)
-                .commitNow();
+        addFragment(new PlayerScreenFragment());
     }
 
     @Override
-    public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount()>0) {
-            getSupportFragmentManager().popBackStack();
-        }
-        else {
-            super.onBackPressed();
+    public void initListNavigation() {
+        getSupportFragmentManager().popBackStackImmediate();
+    }
+
+    private void replaceFragment(final Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, fragment)
+                .commitNow();
+    }
+
+    private void addFragment(final Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack(fragment.getClass().getSimpleName())
+                .add(R.id.container, fragment)
+                .commit();
+    }
+
+    private void setToolbar() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (f != null) {
+            if(f.getClass().getSimpleName().equals(START_SCREEN)) {
+                ToolbarUtils.hideToolbar(MainActivity.this);
+            }
+            else if(f.getClass().getSimpleName().equals(SEARCH_SCREEN)) {
+                ToolbarUtils.showToolbar(MainActivity.this);
+                ToolbarUtils.showSearchOption(MainActivity.this);
+                ToolbarUtils.showFavouritesButton(MainActivity.this);
+                ToolbarUtils.hideBackButton(MainActivity.this);
+            }
+            else if(f.getClass().getSimpleName().equals(PLAYER_SCREEN)) {
+                ToolbarUtils.showToolbar(MainActivity.this);
+                ToolbarUtils.showBackButton(MainActivity.this);
+                ToolbarUtils.hideSearchOption(MainActivity.this);
+                ToolbarUtils.showFavouritesButton(MainActivity.this);
+            }
+            else if(f.getClass().getSimpleName().equals(FAVOURITES_SCREEN)) {
+                ToolbarUtils.showToolbar(MainActivity.this);
+                ToolbarUtils.showBackButton(MainActivity.this);
+                ToolbarUtils.hideSearchOption(MainActivity.this);
+                ToolbarUtils.hideFavouritesButton(MainActivity.this);
+            }
         }
     }
 }

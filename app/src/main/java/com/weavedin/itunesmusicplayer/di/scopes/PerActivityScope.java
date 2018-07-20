@@ -1,4 +1,4 @@
-package com.weavedin.itunesmusicplayer.di.modules.scope;
+package com.weavedin.itunesmusicplayer.di.scopes;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

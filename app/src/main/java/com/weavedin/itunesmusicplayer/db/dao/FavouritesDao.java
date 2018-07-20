@@ -14,11 +14,8 @@ import java.util.List;
 @Dao
 public interface FavouritesDao {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertFavouriteRecord(Result result);
-
-    @Query("Select Count (*) FROM Result Where id = :result")
-    int checkIfFavourite(Result result);
 
     @Delete
     void deleteFavouriteRecord(Result result);

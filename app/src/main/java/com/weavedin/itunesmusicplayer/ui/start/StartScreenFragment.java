@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +28,22 @@ public class StartScreenFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_start,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_start, container, false);
+        ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mMainNavigator = (MainNavigator)context;
+        mMainNavigator = (MainNavigator) context;
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ToolbarUtils.hideToolbar(getActivity());
     }
 
     @Override
@@ -47,16 +55,5 @@ public class StartScreenFragment extends Fragment {
                 mMainNavigator.initSearchScreen();
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ToolbarUtils.hideToolbar(getActivity());
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        ToolbarUtils.showToolbar(getActivity());
     }
 }

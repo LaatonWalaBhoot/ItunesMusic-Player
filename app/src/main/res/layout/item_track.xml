@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="80dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginBottom="4dp"
+    android:id="@+id/track"
     android:layout_width="match_parent"
-    app:cardCornerRadius="2dp"
-    app:cardBackgroundColor="@android:color/white">
+    android:layout_height="80dp"
+    android:layout_marginBottom="4dp"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardCornerRadius="2dp">
 
     <RelativeLayout
-        android:layout_margin="12dp"
-        android:background="@android:color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="12dp">
 
         <ImageView
             android:id="@+id/artwork"
-            android:scaleType="centerCrop"
             android:layout_width="50dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
 
         <LinearLayout
-            android:weightSum="1"
-            android:layout_alignTop="@+id/artwork"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_alignBottom="@+id/artwork"
+            android:layout_alignTop="@+id/artwork"
             android:layout_toEndOf="@+id/artwork"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:weightSum="1">
 
             <TextView
                 android:id="@+id/name"
-                android:singleLine="true"
-                android:gravity="start|center_vertical"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:layout_marginStart="16dp"
                 android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
                 android:layout_weight="0.5"
-                android:layout_height="0dp" />
+                android:gravity="start|center_vertical"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/artist"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_weight="0.5"
+                android:gravity="start|top"
                 android:singleLine="true"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="16sp"
-                android:gravity="start|top"
-                android:layout_marginStart="16dp"
-                android:layout_width="match_parent"
-                android:layout_weight="0.5"
-                android:layout_height="0dp" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 

@@ -1,16 +1,19 @@
 package com.weavedin.itunesmusicplayer.data.models;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@Entity
+import java.io.Serializable;
+
+@Entity(indices = {@Index(value = "trackId", unique = true)})
 public class Result {
 
-    @PrimaryKey(autoGenerate = true)
-    public long id;
     @SerializedName("wrapperType")
     @Expose
     private String wrapperType;
@@ -22,6 +25,7 @@ public class Result {
     private Integer collectionId;
     @SerializedName("trackId")
     @Expose
+    @PrimaryKey
     private Integer trackId;
     @SerializedName("artistName")
     @Expose
@@ -429,5 +433,4 @@ public class Result {
     public void setTrackHdRentalPrice(Double trackHdRentalPrice) {
         this.trackHdRentalPrice = trackHdRentalPrice;
     }
-
 }

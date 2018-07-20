@@ -1,6 +1,8 @@
 package com.weavedin.itunesmusicplayer.ui.player;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,17 +19,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.weavedin.itunesmusicplayer.MainNavigator;
 import com.weavedin.itunesmusicplayer.MainViewModel;
 import com.weavedin.itunesmusicplayer.R;
 import com.weavedin.itunesmusicplayer.utils.ToolbarUtils;
 import com.weavedin.itunesmusicplayer.data.models.Result;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+import org.joda.time.format.DateTimeFormat;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.CompletableObserver;
+import io.reactivex.disposables.Disposable;
 
 public class PlayerScreenFragment extends Fragment implements MediaPlayer.OnCompletionListener {
 
@@ -52,23 +61,34 @@ public class PlayerScreenFragment extends Fragment implements MediaPlayer.OnComp
     @BindView(R.id.favourites_btn)
     ImageView mFavouritesButton;
 
+    @BindView(R.id.list_btn)
+    ImageView mListButton;
+
+    @BindView(R.id.end_time)
+    TextView mEndTime;
+
+    public static final org.joda.time.format.DateTimeFormatter TIME_FORMATTER =
+            DateTimeFormat.forPattern("mm:ss").withZoneUTC();
+
     private MainViewModel mMainViewModel;
     private Result mCurrentResult;
-    private MediaPlayer mMediaPlayer;
+    private MainNavigator mMainNavigator;
+    private static MediaPlayer instance;
+    private boolean isFavourite = false;
     private final Handler mHandler = new Handler();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_player,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.fragment_player, container, false);
+        ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(getActivity()==null) {
+        if (getActivity() == null) {
             return;
         }
         mMainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
@@ -76,71 +96,119 @@ public class PlayerScreenFragment extends Fragment implements MediaPlayer.OnComp
         initPlayer(mCurrentResult);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mMainNavigator = (MainNavigator) context;
+    }
+
+    private static MediaPlayer getInstance() {
+        if (instance == null) {
+            synchronized (MediaPlayer.class) {
+                if (instance == null) {
+                    instance = new MediaPlayer();
+                }
+            }
+
+        }
+        return instance;
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mPlayButton.setImageResource(R.drawable.triangle);
+        mSeekbar.setProgress(0);
+    }
+
     private void initPlayer(final Result result) {
-        if(getContext()==null) {
+        if (getContext() == null) {
             return;
         }
         showProgress();
-        Glide.with(getContext()).load(result.getArtworkUrl100()).into(mArtWork);
+        Glide.with(getContext())
+                .load(result.getArtworkUrl100().replace("100", "500"))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(mArtWork);
         mSongName.setText(result.getTrackName());
-        mArtistName.setText(result.getArtistName()+ " | "+ result.getCollectionName());
-        if(mMainViewModel.isFavourite()) {
-            mFavouritesButton.setImageResource(R.drawable.shape_heart_red);
-        }
-        mMediaPlayer = new MediaPlayer();
+        mArtistName.setText(result.getArtistName() + " | " + result.getCollectionName());
         try {
-            mMediaPlayer.setDataSource(result.getPreviewUrl());
-            mMediaPlayer.prepareAsync();
+            getInstance().reset();
+            getInstance().setDataSource(result.getPreviewUrl());
+            getInstance().prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        mEndTime.setText(TIME_FORMATTER.print(mCurrentResult.getTrackTimeMillis()));
+        getInstance().setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mPlayButton.setImageResource(R.drawable.combined_shape_2);
                 hideProgress();
-                mMediaPlayer.start();
+                getInstance().start();
                 updateProgress();
             }
         });
-        mPlayButton.setOnClickListener(new View.OnClickListener() {
+        mMainViewModel.getAllFavourites().observe(this, new Observer<List<Result>>() {
             @Override
-            public void onClick(View v) {
-                if(mMediaPlayer.isPlaying()) {
-                    mPlayButton.setImageResource(R.drawable.triangle);
-                    mMediaPlayer.pause();
+            public void onChanged(@Nullable List<Result> results) {
+                if(results!=null) {
+                    isFavourite = false;
+                    for (Result result1: results) {
+                        if(result1.getTrackId().equals(mMainViewModel.getmCurrentResult().getTrackId())) {
+                            isFavourite = true;
+                        }
+                    }
+                    if(isFavourite) {
+                        mFavouritesButton.setImageResource(R.drawable.shape_heart_red);
+                    }
+                    else {
+                        mFavouritesButton.setImageResource(R.drawable.shape_heart);
+                    }
                 }
-                else {
-                    mPlayButton.setImageResource(R.drawable.combined_shape_2);
-                    mMediaPlayer.start();
-                }
-                updateProgress();
             }
         });
         mFavouritesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mMainViewModel.isFavourite()) {
-                    mFavouritesButton.setImageResource(R.drawable.shape_heart);
+                if(isFavourite) {
                     mMainViewModel.deleteFavourite(result);
                 }
                 else {
-                    mFavouritesButton.setImageResource(R.drawable.shape_heart_red);
                     mMainViewModel.insertFavourite(result);
                 }
+            }
+        });
+        mPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getInstance().isPlaying()) {
+                    mPlayButton.setImageResource(R.drawable.triangle);
+                    getInstance().pause();
+                } else {
+                    mPlayButton.setImageResource(R.drawable.combined_shape_2);
+                    getInstance().start();
+                }
+                updateProgress();
+            }
+        });
+        mListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMainNavigator.initListNavigation();
             }
         });
     }
 
     private void updateProgress() {
-        mSeekbar.setProgress((int)(((float)mMediaPlayer.getCurrentPosition()/mMediaPlayer.getDuration())*100)); // This math construction give a percentage of "was playing"/"song length"
-        if (mMediaPlayer.isPlaying()) {
+        // This math construction give a percentage of "was playing"/"song length"
+        mSeekbar.setProgress((int) (((float) getInstance().getCurrentPosition() / getInstance().getDuration()) * 100));
+        if (getInstance().isPlaying()) {
             Runnable notification = new Runnable() {
                 public void run() {
                     updateProgress();
                 }
             };
-            mHandler.postDelayed(notification,500);
+            mHandler.postDelayed(notification, 500);
         }
     }
 
@@ -152,26 +220,5 @@ public class PlayerScreenFragment extends Fragment implements MediaPlayer.OnComp
     private void hideProgress() {
         mProgressBar.setVisibility(View.GONE);
         mPlayButton.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ToolbarUtils.hideSearchOption(getActivity());
-        ToolbarUtils.showBackButton(getActivity());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mMediaPlayer.pause();
-        ToolbarUtils.showSearchOption(getActivity());
-        ToolbarUtils.hideBackButton(getActivity());
-    }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        mPlayButton.setImageResource(R.drawable.triangle);
-        mSeekbar.setProgress(0);
     }
 }

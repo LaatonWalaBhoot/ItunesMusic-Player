@@ -10,15 +10,18 @@ import com.weavedin.itunesmusicplayer.data.models.SearchResult;
 import com.weavedin.itunesmusicplayer.data.remote.ApiService;
 import com.weavedin.itunesmusicplayer.db.PlayerDb;
 import com.weavedin.itunesmusicplayer.db.entity.Search;
+
 import java.util.List;
 import java.util.logging.Handler;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableObserver;
 import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,13 +33,13 @@ public class MainViewModel extends ViewModel {
     private OnResultReceivedListener listener;
     private Result mCurrentResult;
     private PlayerDb mRoomDatabase;
-    private boolean isFavourite = false;
 
     public void initCall(ApiService mApiService, String query) {
+        listener.onResultRequest();
         mApiService.getTracks(query).enqueue(new Callback<SearchResult>() {
             @Override
             public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
-                if(response.body()!=null) {
+                if (response.body() != null) {
                     mResult = response.body();
                     listener.onResultSuccess();
                 }
@@ -93,21 +96,6 @@ public class MainViewModel extends ViewModel {
                 .subscribe();
     }
 
-    public boolean isFavourite() {
-        Completable.create(new CompletableOnSubscribe() {
-            @Override
-            public void subscribe(CompletableEmitter emitter) throws Exception {
-                if(mRoomDatabase.favouritesDao().checkIfFavourite(mCurrentResult)>0) {
-
-                }
-                emitter.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
-        return isFavourite;
-    }
-
     public LiveData<List<Result>> getAllFavourites() {
         return mRoomDatabase.favouritesDao().fetchAllFavourites();
     }
@@ -116,8 +104,8 @@ public class MainViewModel extends ViewModel {
         this.listener = listener;
     }
 
-    public List<Result> getResults() {
-        return mResult.getResults();
+    public List<Result> getResults(int start, int end) {
+        return mResult.getResults().subList(start, end);
     }
 
     public int getResultCount() {
@@ -133,6 +121,8 @@ public class MainViewModel extends ViewModel {
     }
 
     public interface OnResultReceivedListener {
+
+        void onResultRequest();
 
         void onResultSuccess();
 
