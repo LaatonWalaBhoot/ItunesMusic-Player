@@ -27,10 +27,10 @@
 
             <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                 android:id="@+id/seekbar"
-                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:layout_alignParentTop="true"
+                android:layout_marginTop="8dp"
                 android:clickable="false"
                 android:focusable="false"
                 app:dsb_indicatorPopupEnabled="false"
@@ -41,22 +41,22 @@
 
             <TextView
                 android:id="@+id/start_time"
-                android:layout_marginStart="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/seekbar"
                 android:layout_below="@+id/seekbar"
+                android:layout_marginStart="16dp"
                 android:text="00:00"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/end_time"
-                android:layout_marginEnd="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/seekbar"
                 android:layout_below="@+id/seekbar"
+                android:layout_marginEnd="16dp"
                 android:text="00:00"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />

@@ -19,10 +19,9 @@ import android.widget.TextView;
 
 import com.weavedin.itunesmusicplayer.MainViewModel;
 import com.weavedin.itunesmusicplayer.R;
-import com.weavedin.itunesmusicplayer.utils.ToolbarUtils;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.relex.circleindicator.CircleIndicator;
 
 public class SearchScreenFragment extends Fragment implements
         MainViewModel.OnResultReceivedListener {
@@ -39,11 +38,14 @@ public class SearchScreenFragment extends Fragment implements
     @BindView(R.id.load_progress)
     ProgressBar mProgress;
 
-    @BindView(R.id.tab_layout)
-    TabLayout mTabLayout;
+    @BindView(R.id.page_indicator)
+    CircleIndicator mPageIndicator;
 
     private MainViewModel mMainViewModel;
+    private ViewTreeObserver.OnDrawListener onDrawListener;
     private int mChildren;
+    private int mCount;
+    private boolean drawState = false;
 
     @Nullable
     @Override
@@ -61,27 +63,39 @@ public class SearchScreenFragment extends Fragment implements
         }
         mMainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         mMainViewModel.setResultReceivedListener(this);
-        mTracksContainer.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
+        onDrawListener = new ViewTreeObserver.OnDrawListener() {
             @Override
             public void onDraw() {
                 mChildren = mTracksContainer.getMeasuredHeight() / dpToPx(80) - 1;
+                drawState = true;
             }
-        });
-        mTabLayout.setupWithViewPager(mTracksContainer, true);
+        };
+        mTracksContainer.getViewTreeObserver().addOnDrawListener(onDrawListener);
     }
 
     @Override
     public void onResultRequest() {
         showProgress();
+        if(drawState) {
+            mTracksContainer.getViewTreeObserver().removeOnDrawListener(onDrawListener);
+            drawState = false;
+        }
     }
 
     @Override
     public void onResultSuccess() {
         hideProgress();
+        if (mMainViewModel.getResultCount() % mChildren == 0) {
+            mCount = mMainViewModel.getResultCount() / mChildren;
+        } else {
+            mCount = (mMainViewModel.getResultCount() / mChildren) + 1;
+        }
+        mTracksContainer.getViewTreeObserver().dispatchOnDraw();
         mSongCount.setText(String.valueOf("All Songs - ")
                 .concat(String.valueOf(mMainViewModel.getResultCount())));
         mTracksContainer.setAdapter(new ViewPagerAdapter(getChildFragmentManager(),
-                mMainViewModel.getResultCount() / mChildren, mChildren));
+                mCount, mChildren));
+        mPageIndicator.setViewPager(mTracksContainer);
     }
 
     @Override
@@ -107,6 +121,6 @@ public class SearchScreenFragment extends Fragment implements
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return Math.round(dp * (displayMetrics.ydpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

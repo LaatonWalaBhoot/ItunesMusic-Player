@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,10 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.weavedin.itunesmusicplayer.data.remote.ApiService;
 import com.weavedin.itunesmusicplayer.db.PlayerDb;
@@ -100,11 +105,17 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!TextUtils.isEmpty(mSearchBar.getText().toString())) {
-                    mMainViewModel.initCall(retrofit.create(ApiService.class)
-                            , mSearchBar.getText().toString());
-                    mMainViewModel.insertSearch(mSearchBar.getText().toString());
+                performSearch();
+            }
+        });
+        mSearchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    performSearch();
+                    return true;
                 }
+                return false;
             }
         });
         mNavigationButton.setOnClickListener(new View.OnClickListener() {
@@ -162,25 +173,39 @@ public class MainActivity extends AppCompatActivity implements MainNavigator {
                 .commit();
     }
 
+    private void performSearch() {
+        if (!TextUtils.isEmpty(mSearchBar.getText().toString())) {
+            mMainViewModel.initCall(retrofit.create(ApiService.class)
+                    , mSearchBar.getText().toString());
+            mMainViewModel.insertSearch(mSearchBar.getText().toString());
+            hideKeyboard();
+        }
+    }
+
+    private void hideKeyboard() {
+        mSearchBar.clearFocus();
+        InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (in != null) {
+            in.hideSoftInputFromWindow(mSearchBar.getWindowToken(), 0);
+        }
+    }
+
     private void setToolbar() {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
         if (f != null) {
-            if(f.getClass().getSimpleName().equals(START_SCREEN)) {
+            if (f.getClass().getSimpleName().equals(START_SCREEN)) {
                 ToolbarUtils.hideToolbar(MainActivity.this);
-            }
-            else if(f.getClass().getSimpleName().equals(SEARCH_SCREEN)) {
+            } else if (f.getClass().getSimpleName().equals(SEARCH_SCREEN)) {
                 ToolbarUtils.showToolbar(MainActivity.this);
                 ToolbarUtils.showSearchOption(MainActivity.this);
                 ToolbarUtils.showFavouritesButton(MainActivity.this);
                 ToolbarUtils.hideBackButton(MainActivity.this);
-            }
-            else if(f.getClass().getSimpleName().equals(PLAYER_SCREEN)) {
+            } else if (f.getClass().getSimpleName().equals(PLAYER_SCREEN)) {
                 ToolbarUtils.showToolbar(MainActivity.this);
                 ToolbarUtils.showBackButton(MainActivity.this);
                 ToolbarUtils.hideSearchOption(MainActivity.this);
                 ToolbarUtils.showFavouritesButton(MainActivity.this);
-            }
-            else if(f.getClass().getSimpleName().equals(FAVOURITES_SCREEN)) {
+            } else if (f.getClass().getSimpleName().equals(FAVOURITES_SCREEN)) {
                 ToolbarUtils.showToolbar(MainActivity.this);
                 ToolbarUtils.showBackButton(MainActivity.this);
                 ToolbarUtils.hideSearchOption(MainActivity.this);

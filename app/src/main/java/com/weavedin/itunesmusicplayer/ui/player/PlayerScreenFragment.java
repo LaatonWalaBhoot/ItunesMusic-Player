@@ -127,7 +127,6 @@ public class PlayerScreenFragment extends Fragment implements MediaPlayer.OnComp
         showProgress();
         Glide.with(getContext())
                 .load(result.getArtworkUrl100().replace("100", "500"))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mArtWork);
         mSongName.setText(result.getTrackName());
         mArtistName.setText(result.getArtistName() + " | " + result.getCollectionName());

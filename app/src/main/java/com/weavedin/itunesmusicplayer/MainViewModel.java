@@ -105,7 +105,11 @@ public class MainViewModel extends ViewModel {
     }
 
     public List<Result> getResults(int start, int end) {
-        return mResult.getResults().subList(start, end);
+        if (end > mResult.getResults().size()) {
+            return mResult.getResults().subList(start, mResult.getResults().size());
+        } else {
+            return mResult.getResults().subList(start, end);
+        }
     }
 
     public int getResultCount() {
