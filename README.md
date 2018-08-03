@@ -1,7 +1,7 @@
 # ItunesMusic-Player
 Play Music from the Itunes Store
 
-![alt text](https://lh4.googleusercontent.com/nPpu49-FPIMDixgBY1KYtjikoFmF7yujMxryAftmTYGyEGMWhblogMhhLo3rwv9wOpJW4JecpfnlEbvThTA=w1199-h905)
+![alt text](https://imageresize.org/view/d765751d-326b-4127-804e-1b4cd4f2abd5)
 
 Libraries Used:
 1. Room - for SQLite database abstraction. Performing database transactions asynchronously and utilising its live data capabilities.
